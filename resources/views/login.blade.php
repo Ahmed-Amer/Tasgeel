@@ -74,7 +74,7 @@
               @endif --}}
                     <div id="LoginError" class="alert alert-danger" style="display: none;">
                     </div>
-                    <form id="loginForm" method="POST" action="{{ Route('login') }}">
+                    <form id="loginForm" method="POST">
                         <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
                             <p class="lead fw-normal mb-0 me-3">LOGIN</p>
 
@@ -117,8 +117,9 @@
                         </div>
 
                         <div class="text-center text-lg-start mt-4 pt-2">
-                            <button type="submit" class="btn btn-primary btn-lg"
+                            <button type="submit" class="btn btn-primary btn-lg" id="submitBtn"
                                 style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
+
                             <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="#!"
                                     class="link-primary" style="color: blue">Register</a></p>
                         </div>
@@ -130,14 +131,17 @@
     </section>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.0.18/sweetalert2.all.min.js" integrity="sha512-kW/Di7T8diljfKY9/VU2ybQZSQrbClTiUuk13fK/TIvlEB1XqEdhlUp9D+BHGYuEoS9ZQTd3D8fr9iE74LvCkA==" 
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         $(document).ready(function() {
             $('#loginForm').submit(function(e) {
                 e.preventDefault();
 
+                var btn = document.getElementById('submitBtn');
                 var formData = $(this).serialize();
 
+                btn.disabled = true;
                 $.ajax({
                     type: 'POST',
                     url: '/login',
@@ -155,6 +159,7 @@
                             confirmButtonColor: '#3085d6',
                             confirmButtonText: 'OK'
                         });
+                        btn.disabled = false;
                     }
                 });
             });

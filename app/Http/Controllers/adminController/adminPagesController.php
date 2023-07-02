@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\adminController;
 
-use App\Http\Controllers\Controller;
-use App\Models\Course;
-use App\Models\Department;
-use App\Models\isCourseRegisterActive;
-use App\Models\Professor;
 use App\Models\Role;
-use App\Models\Student;
 use App\Models\User;
+use App\Models\Course;
+use App\Models\Student;
+use App\Models\Professor;
+use App\Models\Department;
+use App\Models\Enrollment;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Models\isCourseRegisterActive;
 
 class adminPagesController extends Controller
 {
@@ -21,17 +23,20 @@ class adminPagesController extends Controller
 
     public function dashboard()
     {
-        $courses = Course::all();
-        $professors = Professor::all();
-        $students = Student::all();
-        $roles = Role::all();
-        $isActive = isCourseRegisterActive::where('id', 1)->first();
+        $courses = Course::count();
+        $professors = Professor::count();
+        $students = Student::count();
+        $enrollments = Enrollment::count();
+        $departments = Department::count();
+        $admins  = User::where('role_id', '==', 1)->get();
+        
+        // $isActive = isCourseRegisterActive::where('id', 1)->first();
         $data = [
             'courses' => $courses,
             'professors' => $professors,
             'students' => $students,
-            'roles' => $roles,
-            'register' => $isActive->isActive,
+            'enrollments' => $enrollments,
+            // 'register' => $isActive->isActive,
         ];
         return View('adminView.dashboard')->with('data', $data);
     }
@@ -62,15 +67,18 @@ class adminPagesController extends Controller
         return View('adminView.professors')->with('professors', $professors);
     }
 
-    public function studentsPage()
+    public function studentsPage(Request $request)
     {
-        $students = User::whereHas('role', function ($query) {
-            $query->where('role_name', 'Student');
-        })
-        ->orderBy('first_name')
-        ->orderBy('last_name')
-        ->get();
+        $year = $request->year;
+        // $students = User::whereHas('role', function ($query) {
+        //     $query->where('role_name', 'Student');
+        // })
+        // ->orderBy('first_name')
+        // ->orderBy('last_name')
+        // ->get();
+        $students = Student::where('study_year' , $year)->get();
         return View('adminView.students')->with('students', $students);
+        
     }
 
     public function addCourse()

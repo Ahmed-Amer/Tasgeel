@@ -1,60 +1,89 @@
 @extends('layouts.adminLayout')
 
 @section('page title')
-    Courses
+Courses
 @endsection
 
 @section('content')
-    <div class="col-sm-7 ml-4">
-        <button class="btn btn-primary" onclick="@if($register == 0)activeCourses()@else deActiveCourses()@endif" type="submit">
-            @if ($register == 0)Active register @else Deactive register @endif
-        </button>
-        <a href="/admin/add-course">Add Course</a>
-    </div>
-    <div class="content mt-3">
 
-        @foreach ($courses as $course)
-            <div class="col-lg-3 col-md-6">
-                <a href="/courses/{{ $course->id }}">
-                    <div class="card" style="
+<div class="row">
+    <div class="col-md-10 mx-auto mt-2">
+        {{-- messages --}}
+        @if (session('success'))
+        <div class="alert alert-success">{{session('success')}}</div>
+        @endif
+
+        @if (session('delete'))
+        <div class="alert alert-danger">{{session('delete')}}</div>
+        @endif
+    </div>
+</div>
+
+<div class="content mt-3">
+
+    <div style="margin: 0 0 15px 15px">
+        <button class="btn btn-md btn-warning" onclick="@if($register == 0)activeCourses()@else deActiveCourses()@endif"
+            type="submit">
+            @if ($register == 0)Activate registeration @else Deactivate registeration @endif
+        </button>
+        <a href="/admin/add-course" class="btn btn-primary btn-md">Add Course</a>
+    </div>
+
+    @foreach ($courses as $course)
+    <div class="col-lg-3 col-md-6">
+        <a href="/courses/{{ $course->id }}">
+            <div class="card" style="
                     border: 1px solid #ccc;
                     overflow: hidden;
                     white-space: nowrap;">
-                        <div class="card-body">
-                            <div class="stat-widget-four">
-                                <div class="stat-icon dib">
-                                    <i class="ti-server text-muted"></i>
-                                </div>
-                                <div class="stat-content">
-                                    <div class="text-left dib">
-                                        <div class="stat-heading">
-                                            <span
-                                                style="display: inline-block;
+                <div class="card-body">
+                    <div class="stat-widget-four">
+                        <div class="stat-icon dib">
+                            <i class="ti-server text-muted"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="text-left dib">
+                                <div class="stat-heading">
+                                    <span style="display: inline-block;
                                     max-width: 100%;
                                     overflow: hidden;
                                     text-overflow: ellipsis;
                                     white-space: nowrap;">
-                                                {{ $course->course_name }}
-                                            </span>
-                                        </div>
-                                        <div class="stat-text">Dr.{{ $course->professor->user->first_name }}
-                                            {{ $course->professor->user->last_name }}</div>
-                                        <div class="stat-text">{{ $course->course_code }}</div>
-                                    </div>
+                                        {{ $course->course_name }}
+                                    </span>
                                 </div>
+                                <div class="stat-text">Dr.{{ $course->professor->user->first_name }}
+                                    {{ $course->professor->user->last_name }}</div>
+                                <small>{{ $course->course_code }} - Year : {{$course->study_year}}</small>
+                                @if ($course->status === 'archived')
+                                <span style="
+                                color: #fff;
+                                background-color: brown;
+                                font-size: 0.8rem;
+                                padding: 3px 10px;
+                                border-radius: 5px;
+                                position: absolute;
+                                top: 5px;
+                                right: 5px;
+                                ">archived</span>
+                                @endif
                             </div>
                         </div>
                     </div>
-                </a>
+                </div>
             </div>
-        @endforeach
+        </a>
+    </div>
+    @endforeach
 
 
 
-    </div> <!-- .content -->
+</div> <!-- .content -->
 @endsection
 
 @section('scripts')
+<script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+
 <script>
     function activeCourses()
     {

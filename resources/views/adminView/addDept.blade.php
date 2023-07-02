@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-    <form method="POST" action="{{ url('/admin/add-dept') }}" class="form">
+    <form method="POST" action="{{ url('/admin/add-dept') }} " class="form">
 
         <h3 style="text-align: center">Add Department</h3>
 

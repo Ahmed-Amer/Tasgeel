@@ -27,7 +27,7 @@
                 </a>
             @endforeach
         @else
-        <h1>There are no assignments for this course</h1>
+        <p style="font-weight: 200; font-size: 22px; margin-top: 25px">There are no assignments for this course</p>
         @endif
 
     </div>

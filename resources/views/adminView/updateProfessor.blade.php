@@ -70,7 +70,7 @@
                 <span>Department</span>
             </label>
         </div>
-        <button type="submit" class="fancy" href="">Add doctor</button>
+        <button type="submit" class="fancy" href="">Update doctor</button>
     </form>
 @endsection
 

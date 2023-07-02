@@ -65,6 +65,6 @@
             @enderror
         </label>
 
-        <button type="submit" class="fancy">Add student</button>
+        <button type="submit" class="fancy">Update student</button>
     </form>
 @endsection

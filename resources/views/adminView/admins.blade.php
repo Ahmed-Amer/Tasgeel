@@ -1,67 +1,88 @@
 @extends('layouts.adminLayout')
 
 @section('page title')
-    Administrators
+Administrators
 @endsection
 
 @section('content')
-    <div class="col-sm-7">
-        <a href="/admin/add-admin">Add Administrator</a>
+<div class="row">
+    <div class="col-md-10 mx-auto mt-2">
+        {{-- messages --}}
+        @if (session('success'))
+        <div class="alert alert-success">{{session('success')}}</div>
+        @endif
+
+        @if (session('delete'))
+        <div class="alert alert-danger">{{session('delete')}}</div>
+        @endif
     </div>
-    <div class="content mt-3">
-        <div class="animated fadeIn">
-            <div class="row">
+</div>
 
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <strong class="card-title">Data Table</strong>
-                            <button onclick="downloadTableAsPdf()" class="btn btn-success ml-3" style="border-radius: 15px">Export PDF</button>
-                        </div>
 
-                        <div class="card-body">
-                            <table id="bootstrap-data-table-export-admins" class="table table-striped table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Username</th>
-                                        <th>Phone number</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
+
+<div class="col-sm-7">
+    <a href="/admin/add-admin" class="btn btn-primary btn-md">Add Administrator</a>
+</div>
+<div class="content mt-3">
+    <div class="animated fadeIn">
+        <div class="row">
+
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <strong class="card-title">Data Table</strong>
+                        <button onclick="downloadTableAsPdf()" class="btn btn-sm btn-outline-secondary ml-3">Export
+                            PDF</button>
+                    </div>
+
+                    <div class="card-body">
+                        <table id="bootstrap-data-table-export-admins" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Username</th>
+                                    <th>Phone number</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
                                     $c = 1;
                                     ?>
-                                    @foreach ($admins as $admin)
-                                        <tr>
-                                            <td>{{ $c++ }}</td>
-                                            <td>{{ $admin->first_name }} {{ $admin->first_name }}</td>
-                                            <td>{{ $admin->email }}</td>
-                                            <td>{{ $admin->username }}</td>
-                                            <td>{{ $admin->phone_number }}</td>
-                                            <td>
-                                                @if (Auth::user()->id != $admin->id)
-                                                    <a onclick="return confirm('Are you sure to delete Dr.{{ $admin->first_name }}  {{ $admin->last_name }}')"
-                                                        class="text text-danger"
-                                                        href="/admin/delete-admin/{{ $admin->id }}">Delete</a>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                                @foreach ($admins as $admin)
+                                <tr>
+                                    <td>{{ $c++ }}</td>
+                                    <td>{{ $admin->first_name }} {{ $admin->first_name }}</td>
+                                    <td>{{ $admin->email }}</td>
+                                    <td>{{ $admin->username }}</td>
+                                    <td>{{ $admin->phone_number }}</td>
+                                    <td>
+                                        <a class="btn btn-info btn-sm" href="/edit-admin/{{ $admin->id }}">Edit</a> |
+
+                                        @if (Auth::user()->id != $admin->id)
+                                        <a onclick="return confirm('Are you sure to delete Dr.{{ $admin->first_name }}  {{ $admin->last_name }}')"
+                                            class="btn btn-danger btn-sm"
+                                            href="/admin/delete-admin/{{ $admin->id }}">Delete</a>
+                                        @else
+                                        <button class="btn btn-warning btn-sm" style="cursor: not-allowed;"
+                                            @disabled(true)>Your Account</button>
+                                        @endif
+                                    </td>
+                                </tr>
+                                @endforeach
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-
-
             </div>
-        </div><!-- .animated -->
-    </div><!-- .content -->
+
+
+        </div>
+    </div><!-- .animated -->
+</div><!-- .content -->
 @endsection
 
 @section('scripts')

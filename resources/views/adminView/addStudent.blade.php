@@ -5,6 +5,7 @@
 @endsection
 
 @section('content')
+
     <form id="AddStudentForm" method="POST" action="{{ url('/admin/add-new-student') }}" class="form">
         @csrf
 
@@ -28,7 +29,17 @@
                     <span class="text-danger">{{ $message }}</span>
                 @enderror
             </label>
+
         </div>
+        <label>
+            <select class="form-select input" name="study_year">
+                    <option value="first">First year</option>
+                    <option value="second">Second year</option>
+                    <option value="third">Third year</option>
+                    <option value="fourth">Fourth year</option>
+            </select>
+            <span>Academic year</span>
+        </label>
 
         <label>
             <input name="username" for="username" required="" value="{{ old('username') }}" type="text" placeholder=""
@@ -47,6 +58,7 @@
                 <span class="text-danger">{{ $message }}</span>
             @enderror
         </label>
+        
 
         <label>
             <input name="password" for="password" required="" type="password" placeholder="" class="input">

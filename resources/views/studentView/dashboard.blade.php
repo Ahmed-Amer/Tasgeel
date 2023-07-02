@@ -8,7 +8,7 @@
 @section('content')
     <div class="content mt-3">
 
-
+        <h2 class="h2 pb-3 ml-3 mb-4" style="font-weight: 200; border-bottom: 1px solid #ccc">Your Progress</h2>
         @if (count($courses) > 0)
             @foreach ($courses as $course)
                 <div class="col-lg-3 col-md-6">
@@ -35,10 +35,11 @@
             @endforeach
         @else
             <div class="container">
-                <div class="card">
-                    <h1 class="text-center">Currently, there are no courses available</h1>
+                    <div class="text-center">
+                        <h3 class="text-center" style="font-weight: 200;">Currently, you have no enrollments</h3>
                     <p style="text-align: center">Thank you for your interest. If course registrations become available in the future, I encourage you to stay updated with the appropriate channels, such as the educational institution's official website or communication channels. By regularly checking those sources, you will be notified when registration opens and have the opportunity to enroll in courses of your choice.</p>
-                </div>
+                    <a href="/student/register" class="btn btn-success btn-md" style="border-radius: 5px">Check courses</a>
+                    </div>
             </div>
         @endif
 

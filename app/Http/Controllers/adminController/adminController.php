@@ -64,7 +64,36 @@ class adminController extends Controller
         //     'department' => $department,
         // ], 201);
 
-        return redirect('/admin/departments');
+        return redirect('/admin/departments')->with('success', 'Department Created');
+    }
+    public function editDepartment($id)
+    {
+
+        $dept = Department::findOrFail($id);
+        return View('adminView.editDept')->with('dept', $dept);
+    }
+
+    public function updateDepartment(Request $request, $id)
+    {
+        Validator::make($request->all(), [
+            'department_name' => 'required|string|max:255',
+            'department_code' => 'required|string|max:10',
+        ]);
+
+
+        $department = Department::findOrFail($id);
+        $department->department_code = $request->department_code;
+        $department->department_name = $request->department_name;
+        $department->save();
+
+        return redirect('/admin/departments')->with('success', 'Department Updated');
+    }
+    public function deleteDepartment($id)
+    {
+
+        $department = Department::findOrFail($id);
+        $department->delete();
+        return redirect('/admin/departments')->with('delete', 'Department Deleted');
     }
 
     public function addCourse(Request $request)
@@ -76,19 +105,23 @@ class adminController extends Controller
             'professor_id' => 'required|int|exists:professors,id',
             'prerequisites' => 'nullable|array',
             'prerequisites.*' => 'exists:courses,id',
+            'status' => 'required|string',
+            'study_year' => 'required|string',
         ]);
 
         if ($validatedData->fails()) {
             return redirect('/admin/add-course')
-            ->withErrors($validatedData)
-            ->withInput();
+                ->withErrors($validatedData)
+                ->withInput();
         }
 
         $course = new Course();
         $course->course_code = $request->input('course_code');
         $course->course_name = $request->input('course_name');
-        $course->department_id = $request->input('department_id');
+        $course->department_id = ($request->input('study_year') == 'third' || $request->input('study_year') == 'fourth') ? $request->input('department_id') : null;
         $course->professor_id = $request->input('professor_id');
+        $course->status = $request->input('status');
+        $course->study_year = $request->input('study_year');
 
         $course->save();
 
@@ -102,14 +135,76 @@ class adminController extends Controller
             }
         }
 
-        // return response()->json([
-        //     'message' => 'Course added successfully',
-        //     'course' => $course,
-        //     'prerequiesties' => $course->prerequisites,
-        // ], 201);
-
-        return redirect('/admin/courses');
+        return redirect('/admin/courses')->with('success', 'Course Created');
     }
+
+
+    public function deleteCourse($id)
+    {
+
+        $course = Course::findOrFail($id);
+        $course->delete();
+        return redirect('/admin/courses')->with('delete', 'Course Deleted');
+    }
+
+    public function editCourse($id)
+    {
+        $course = Course::findOrFail($id);
+        $departments = Department::all();
+        $professors = Professor::all();
+        $courses = Course::all();
+        $prerequisites = Prerequisite::all();
+        return view('adminView.editCourse')->with('data', [
+            'depts' => $departments,
+            'profs' => $professors,
+            'course' => $course,
+            'courses' => $courses,
+            'prerequisites' => $prerequisites
+
+        ]);
+    }
+
+    public function updateCourse(Request $request, $id)
+    {
+        $validatedData = Validator::make($request->all(), [
+            'course_code' => 'required|string|max:255',
+            'course_name' => 'required|string|max:255',
+            'department_id' => 'required|exists:departments,id',
+            'professor_id' => 'required|int|exists:professors,id',
+            'prerequisites' => 'nullable|array',
+            'prerequisites.*' => 'exists:courses,id',
+            'status' => 'required|string',
+        ]);
+
+        if ($validatedData->fails()) {
+            return redirect('/admin/add-course')
+                ->withErrors($validatedData)
+                ->withInput();
+        }
+
+        $course = Course::findOrFail($id);
+        $course->course_code = $request->input('course_code');
+        $course->course_name = $request->input('course_name');
+        $course->department_id = ($request->input('study_year') == 'third' || $request->input('study_year') == 'fourth') ? $request->input('department_id') : null;
+        $course->professor_id = $request->input('professor_id');
+        $course->status = $request->input('status');
+        $course->study_year = $request->input('study_year');
+
+        $course->save();
+
+        if ($request->has('prerequisites') && is_array($request->input('prerequisites'))) {
+            foreach ($request->input('prerequisites') as $pre_course_id) {
+                $prerequisite = new Prerequisite();
+                $prerequisite->course_id = $course->id;
+                $prerequisite->prerequisite_id = $pre_course_id;
+
+                $prerequisite->save();
+            }
+        }
+
+        return redirect('/admin/courses')->with('success', 'Course Updated');
+    }
+
 
     public function addRole(Request $request)
     {
@@ -144,12 +239,13 @@ class adminController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required|string|min:8',
             'phone_number' => 'required|string|min:10',
+            'study_year' => 'required|string',
         ]);
 
         if ($validator->fails()) {
             return redirect('/admin/add-student')
-            ->withErrors($validator)
-            ->withInput();
+                ->withErrors($validator)
+                ->withInput();
         }
 
         $role = Role::where('role_name', 'Student')->first();
@@ -161,6 +257,7 @@ class adminController extends Controller
             'email' => $request->input('email'),
             'password' => bcrypt($request->input('password')),
             'phone_number' => $request->input('phone_number'),
+            'study_year' => $request->input('study_year'),
             'role_id' => $role->id
         ]);
 
@@ -168,6 +265,7 @@ class adminController extends Controller
         $st = new Student();
         $st->user_id = $student->id;
         $st->enrollment_date = $student->created_at;
+        $st->study_year = $request->input('study_year');
 
         $st->save();
 
@@ -177,11 +275,12 @@ class adminController extends Controller
         //     'redirect' => '/admin/students'
         // ], 201);
 
-        return redirect('/admin/students');
+        return redirect('/admin/students?year=' . $st->study_year)->with('success', 'Student Created');
     }
 
     public function deleteStudent($id)
     {
+
 
         $student = Student::where('user_id', $id)->first();
         if ($student) {
@@ -191,7 +290,7 @@ class adminController extends Controller
         if ($user) {
             $user->delete();
         }
-        return redirect('/admin/students');
+        return redirect('/admin/students?year=first')->with('delete', 'Student Deleted');
     }
 
     public function updateStudent(Request $request, $id)
@@ -215,8 +314,8 @@ class adminController extends Controller
 
         if ($validator->fails()) {
             return redirect('/admin/student/' . $id . '/edit')
-            ->withErrors($validator)
-            ->withInput();
+                ->withErrors($validator)
+                ->withInput();
         }
 
         $user->first_name = $request->input('first_name');
@@ -233,7 +332,7 @@ class adminController extends Controller
         //     'message' => 'Student updated successfully',
         //     'user' => $user
         // ]);
-        return redirect('/admin/students');
+        return redirect('/admin/students?year=first')->with('success', 'Student Updated');
     }
 
 
@@ -251,8 +350,8 @@ class adminController extends Controller
 
         if ($validator->fails()) {
             return redirect('/admin/add-professor')
-            ->withErrors($validator)
-            ->withInput();
+                ->withErrors($validator)
+                ->withInput();
         }
 
         $role = Role::where('role_name', 'Doctor')->first();
@@ -274,12 +373,7 @@ class adminController extends Controller
 
         $doc->save();
 
-        // return response()->json([
-        //     'message' => 'Doctor created successfully',
-        //     'student' => $doctor,
-        // ], 201);
-
-        return redirect('/admin/professors');
+        return redirect('/admin/professors')->with('success', 'Doctor Created');
     }
 
     public function updateDoctor(Request $request, $id)
@@ -287,11 +381,11 @@ class adminController extends Controller
         $user = User::findOrFail($id);
 
         $validator = Validator::make($request->all(), [
-            'first_name' => 'required|string|min:5|max:255',
+            'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'username' => 'required|unique:users,username,' . $id . '|min:3',
-            'email' => 'required|email|unique:users,email,' . $id,
-            'password' => 'nullable|string|min:8',
+            'username' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|string|min:8',
             'phone_number' => 'required|string|min:10',
             'department_id' => 'required|int'
         ]);
@@ -302,18 +396,22 @@ class adminController extends Controller
                 ->withInput();
         }
 
-        $userData = $validator->validated();
-        if ($request->has('password')) {
-            $userData['password'] = bcrypt($request->input('password'));
-        }
 
-        $user->update($userData);
+        $user->first_name = $request->input('first_name');
+        $user->last_name = $request->input('last_name');
+        $user->username = $request->input('username');
+        $user->email = $request->input('email');
+        if ($request->has('password')) {
+            $user->password = bcrypt($request->input('password'));
+        }
+        $user->phone_number = $request->input('phone_number');
+        $user->save();
 
         $professor = Professor::where('user_id', $id)->first();
-        $professor->department_id = $userData['department_id'];
+        $professor->department_id = $request->input('department_id');
         $professor->save();
 
-        return redirect('/admin/professors');
+        return redirect('/admin/professors')->with('success', 'Doctor Updated');
     }
 
     public function deleteProf($id)
@@ -327,7 +425,7 @@ class adminController extends Controller
         if ($user) {
             $user->delete();
         }
-        return redirect('/admin/professors');
+        return redirect('/admin/professors')->with('delete', 'Doctor Deleted');
     }
 
     public function addAdmin(Request $request)
@@ -343,8 +441,8 @@ class adminController extends Controller
 
         if ($validator->fails()) {
             return redirect('/admin/add-admin')
-            ->withErrors($validator)
-            ->withInput();
+                ->withErrors($validator)
+                ->withInput();
         }
 
         $role = Role::where('role_name', 'Admin')->first();
@@ -364,7 +462,7 @@ class adminController extends Controller
         //     'student' => $student,
         // ], 201);
 
-        return redirect('/admin/adminstrators');
+        return redirect('/admin/adminstrators')->with('success', 'Admin Created');
     }
 
     public function deleteAdmin($id)
@@ -374,6 +472,6 @@ class adminController extends Controller
         if ($user) {
             $user->delete();
         }
-        return redirect('/admin/adminstrators');
+        return redirect('/admin/adminstrators')->with('delete', 'Admin Deleted');
     }
 }

@@ -40,15 +40,28 @@ Route::group(['middleware' => 'auth', 'admin'], function () {
         Route::controller(adminController::class)->group(function () {
             Route::post('/add-dept', 'addDepartment');
             Route::post('/add-new-student', 'addStudent');
-            Route::post('/add-new-admin', 'addAdmin');
             Route::post('/add-new-doctor', 'addDoctor');
             Route::post('/add-new-role', 'addRole');
-            Route::post('/add-new-course', 'addCourse');
             Route::post('/active-courses-register', 'activeCourses');
             Route::post('/deactive-courses-register', 'deactiveCourses');
             Route::get('/delete-student/{id}', 'deleteStudent');
             Route::get('/delete-professor/{id}', 'deleteProf');
+
+            Route::post('/add-new-course', 'addCourse');
+            Route::delete('/delete-course/{id}', 'deleteCourse');
+            Route::get('/edit-course/{id}', 'editCourse');
+            Route::put('/update-course/{id}', 'updateCourse');
+
+            Route::get('/department/{id}/edit', 'editDepartment');
+            Route::put('/department/{id}/update', 'updateDepartment');
+            Route::delete('/department/{id}/delete', 'deleteDepartment');
+
+            Route::post('/add-new-admin', 'addAdmin');
             Route::get('/delete-admin/{id}', 'deleteAdmin');
+            Route::get('/edit-admin/{id}', 'editAdmin');
+            Route::put('/update-admin/{id}', 'updateAdmin');
+
+
             Route::post('/student/{id}/edit', 'updateStudent');
             Route::post('/professor/{id}/edit', 'updateDoctor');
 

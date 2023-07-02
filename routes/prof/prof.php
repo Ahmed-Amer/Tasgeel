@@ -18,8 +18,9 @@ Route::group(['middleware' => 'auth', 'professor'], function () {
 
     Route::prefix('professor')->group(function () {
         Route::controller(professorController::class)->group(function () {
-            Route::get('/dashboard', 'dashboard');
+            Route::get('/dashboard', 'coursesPage');
             Route::get('/courses', 'coursesPage');
+            Route::get('/archive', 'archivedPage');
             Route::get('/students', 'studentsPage');
             Route::get('/departments', 'department');
             Route::post('/courses/student/mark', 'addMark');

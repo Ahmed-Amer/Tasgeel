@@ -107,6 +107,20 @@ class professorController extends Controller
         ]);
     }
 
+    public function archivedPage()
+    {
+        $courses = Auth::user()->professor->courses;
+        $archived_courses = array();
+        foreach ($courses as $course) {
+           if($course->status == 'archived'){
+            array_push($archived_courses , $course);
+           }
+        }
+        return view('professorView.courses')->with([
+            'courses' => $archived_courses,
+        ]);
+    }
+
     public function department()
     {
         $departments = Department::all();

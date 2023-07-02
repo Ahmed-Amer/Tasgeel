@@ -12,12 +12,15 @@
     <link rel="apple-touch-icon" href="apple-icon.png">
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="/vendors/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/vendors/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="/vendors/themify-icons/css/themify-icons.css">
     <link rel="stylesheet" href="/vendors/flag-icon-css/css/flag-icon.min.css">
     <link rel="stylesheet" href="/vendors/selectFX/css/cs-skin-elastic.css">
     <link rel="stylesheet" href="/vendors/jqvmap/dist/jqvmap.min.css">
     <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/fontawesome.min.css" 
+    integrity="sha512-SgaqKKxJDQ/tAUAAXzvxZz33rmn7leYDYfBP+YoMRSENhf3zJyx3SBASt/OfeQwBHA1nxMis7mM3EV/oYT6Fdw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
@@ -31,6 +34,9 @@
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
 
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.1/js/bootstrap.min.js" integrity="sha512-EKWWs1ZcA2ZY9lbLISPz8aGR2+L7JVYqBAYTq5AXgBkSjRSuQEGqWx8R1zAX16KdXPaCjOCaKE8MCpU0wcHlHA=="
+     crossorigin="anonymous" referrerpolicy="no-referrer"></script>    
 </head>
 
 <body>
@@ -62,23 +68,32 @@
                         </a>
                     </li>
 
-                    <li class="active">
-                        <a href="{{ url('/admin/adminstrators') }}"> <i class="menu-icon fa fa-cogs"></i>Administrators
-                        </a>
-                    </li>
 
                     <li class="active">
                         <a href="{{ url('/admin/professors') }}"> <i class="menu-icon fa fa-user-md"></i>Professors
                         </a>
                     </li>
 
+                    <div class="active dropdown">
+                        <a class="dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 10px 0;display: inline-block"> 
+                            <i class="menu-icon fa fa-graduation-cap" style="width: 55px"></i>Students
+                        </a>
+                    
+                    <ul class="dropdown-menu" style="position: static; background: none; border: none;margin-left: 55px">
+                        <li><a style="padding: 5px 0px;font-size: 13px;" class="dropdown-item" href="/admin/students?year=first">First academic year</a></li>
+                        <li><a style="padding: 5px 0px;font-size: 13px;" class="dropdown-item" href="/admin/students?year=second">Second academic year</a></li>
+                        <li><a style="padding: 5px 0px;font-size: 13px;" class="dropdown-item" href="/admin/students?year=third">Third academic year</a></li>
+                        <li><a style="padding: 5px 0px;font-size: 13px;" class="dropdown-item" href="/admin/students?year=fourth">Fourth academic year</a></li>
+                      </ul>
+                    </div>
+
                     <li class="active">
-                        <a href="{{ url('/admin/students') }}"> <i class="menu-icon fa fa-graduation-cap"></i>Students
+                        <a href="{{ url('/admin/departments') }}"> <i class="menu-icon fa fa-building"></i>Departments
                         </a>
                     </li>
 
                     <li class="active">
-                        <a href="{{ url('/admin/departments') }}"> <i class="menu-icon fa fa-building"></i>Departments
+                        <a href="{{ url('/admin/adminstrators') }}"> <i class="menu-icon fa fa-cogs"></i>Administrators
                         </a>
                     </li>
 
@@ -148,7 +163,6 @@
 
     @yield('scripts')
 
-    <script src="/vendors/jquery/dist/jquery.min.js"></script>
     <script src="/assets/js/main.js"></script>
     <script src="/vendors/popper.js/dist/umd/popper.min.js"></script>
     <script src="/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -165,8 +179,7 @@
     <script src="/vendors/datatables.net-buttons/js/buttons.colVis.min.js"></script>
     <script src="/assets/js/init-scripts/data-table/datatables-init.js"></script>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous">
     </script>

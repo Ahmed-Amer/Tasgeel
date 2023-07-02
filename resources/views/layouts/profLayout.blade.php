@@ -52,13 +52,13 @@
             <div id="main-menu" class="main-menu collapse navbar-collapse">
                 <ul class="nav navbar-nav">
                     <li class="active">
-                        <a href="{{ url('/professor/dashboard') }}"> <i class="menu-icon fa fa-dashboard"></i>Dashboard </a>
+                        <a href="{{ url('/professor/dashboard') }}"> <i class="menu-icon fa fa-book"></i>Dashboard </a>
                     </li>
 
                     <li class="active">
-                        <a href="{{ url('/professor/courses') }}">
-                            <i class="menu-icon fa fa-book"></i>
-                            Courses
+                        <a href="{{ url('/professor/archive') }}">
+                            <i class="menu-icon fa fa-archive"></i>
+                            Archived
                         </a>
                     </li>
 

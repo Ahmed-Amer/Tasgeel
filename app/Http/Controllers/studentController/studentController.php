@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\studentController;
 
-use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use App\Models\Course;
 use App\Models\Degree;
 use App\Models\Enrollment;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class studentController extends Controller
@@ -64,11 +65,22 @@ class studentController extends Controller
             ->first();
 
         if ($enrollment) {
-            $enrollment->delete();
-            return response()->json([
-                'message' => 'Enrollment deleted successfully',
-                'id' => $courseId
-            ]);
+            $currentTime = Carbon::now();
+            $last_create = Carbon::parse($enrollment->created_at);
+            if($currentTime->diffInHours($last_create) < 24){
+                
+                $enrollment->delete();
+                return response()->json([
+                    'message' => 'Enrollment deleted successfully',
+                    'status' => 'success'
+                ]);
+            }else{
+                return response()->json([
+                    'message' => "You can't edit your Enrollment",
+                    'status' => 'error'
+                ]);
+            }            
+
         }
 
         return response()->json([

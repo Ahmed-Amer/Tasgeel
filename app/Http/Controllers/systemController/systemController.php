@@ -33,7 +33,7 @@ class systemController extends Controller
             }else if ($role == "Doctor") {
                 return response()->json([
                     'message' => 'Login successful',
-                    'redirect' => '/professor/dashboard',
+                    'redirect' => '/professor/courses',
                 ]);
             }else if ($role == "Student") {
                 return response()->json([
@@ -93,7 +93,7 @@ class systemController extends Controller
         $lectures = Lecture::where('course_id', $id)->get();
         return View('lectures')->with([
             'lectures' => $lectures,
-            'course id' => $id,
+            'course_id' => $id,
         ]);
     }
 

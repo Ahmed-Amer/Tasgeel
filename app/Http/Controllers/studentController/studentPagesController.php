@@ -22,20 +22,23 @@ class studentPagesController extends Controller
         return View('studentView.dashboard')->with('courses', $courses);
     }
 
+    public function profile()
+    {
+        $student = Auth::user()->student;
+        return View('studentView.profile')->with('student', $student);
+    }
+
     public function courseRegister()
     {
 
-        $Active = isCourseRegisterActive::where('id', 1)->first();
-        // return response()->json(
-        //     [
-        //         'message' => $Active
-        //     ]
-        // );
+       $Active = isCourseRegisterActive::where('id', 1)->first();
+       $student =  Auth::user()->student;
+    
         if ($Active->isActive == 0) {
             return redirect('/student/dashboard');
         }
 
-        $courses = Course::all();
+        $courses = Course::where('status' , 'active')->where('study_year', $student->study_year)->get();
         $validatedCourses = array();
         $actives = array();
         foreach ($courses as $course) {
@@ -43,7 +46,7 @@ class studentPagesController extends Controller
             if ($st->checkIfStudentCanRegisterThisCourse($course->id)) {
                 $validatedCourses[] = $course;
                 $enrollment = Enrollment::where('course_id', $course->id)
-                    ->where('student_id', Auth::user()->student->id)
+                    ->where('student_id', $student->id)
                     ->first();
                 if ($enrollment) { // true
                     $actives[] = true;
